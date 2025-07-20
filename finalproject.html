@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Manager</title>
+  <style>
+    .important { color: red; }
+    .completed { text-decoration: line-through; }
+  </style>
+</head>
+<body>
+  <h1>Task Manager</h1>
+
+  <form id="taskForm">
+    <input type="text" id="taskName" placeholder="Task Name" required>
+    <select id="taskPriority">
+      <option>High</option>
+      <option>Medium</option>
+      <option>Low</option>
+    </select>
+    <label><input type="checkbox" id="taskImportant"> Important</label>
+    <button type="submit">Add</button>
+  </form>
+
+  <div id="taskmanager"></div>
+
+  <script>
+    let tasks = [];
+
+    document.getElementById("taskForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("taskName").value.trim();
+      if (!name) return;
+
+      const priority = document.getElementById("taskPriority").value;
+      const isImportant = document.getElementById("taskImportant").checked;
+      const date = new Date().toLocaleDateString();
+
+      const task = {
+        id: Date.now(),
+        name,
+        priority,
+        isImportant,
+        isCompleted: false,
+        date
+      };
+
+      tasks.push(task);
+      console.log(JSON.stringify(tasks));
+      showTasks();
+      this.reset();
+    });
+
+    function showTasks() {
+      const container = document.getElementById("taskmanager");
+      container.innerHTML = "";
+
+      tasks.forEach(task => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <span class="${task.isImportant ? 'important' : ''}">${task.name}</span><br>
+          Priority: ${task.priority}<br>
+          Date: ${task.date}<br>
+          <label><input type='checkbox' onchange='markDone(${task.id})' ${task.isCompleted ? 'checked' : ''}> Done</label>
+          <button onclick='removeTask(${task.id})'>Delete</button>
+        `;
+        if (task.isCompleted) div.classList.add("completed");
+        container.appendChild(div);
+      });
+    }
+
+    function markDone(id) {
+      tasks.forEach(task => {
+        if (task.id === id) task.isCompleted = !task.isCompleted;
+      });
+      console.log(JSON.stringify(tasks));
+      showTasks();
+    }
+
+    function removeTask(id) {
+      tasks = tasks.filter(task => task.id !== id);
+      console.log(JSON.stringify(tasks));
+      showTasks();
+    }
+  </script>
+</body>
+</html>
