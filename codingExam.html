@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculations</title>
+</head>
+<body>
+
+    <p>Name: Mohammad Wehbi</p>
+    <p>Email: mawehbi@my.waketech.edu</p>
+    <p>Date: June 23, 2025</p>
+
+    <button id="Button1">Press to Start Calculating</button>
+
+    <div id="output"></div>
+
+    <script>
+        document.getElementById("Button1").addEventListener("click", function () {
+            var loanAmount = parseFloat(prompt("Please enter the loan amount (without any commas):"));
+            var termYears = parseInt(prompt("Please enter the loan term (either 30 or 15 years):"));
+            var interestRate = 0.0575;
+
+            if (termYears !== 15 && termYears !== 30) {
+                alert("The loan term must be either be 30 or 15 years.");
+                return;
+            }
+
+            var termMonths = termYears * 12;
+
+            var monthlyPayment = (((interestRate / 12) * loanAmount) / (1 - Math.pow(1 + (interestRate / 12), -termMonths))).toFixed(2);
+
+            var totalInterest = ((parseFloat(monthlyPayment) * termMonths) - loanAmount).toFixed(2);
+            var totalLoan = (loanAmount + parseFloat(totalInterest)).toFixed(2);
+
+            var outputText = "";
+            outputText += "<p>Mortgage Term: " + termYears + " years</p>";
+            outputText += "<p>Mortgage Interest Rate: 5.75%</p>";
+            outputText += "<p>Mortgage Amount: $" + loanAmount.toFixed(2) + "</p>";
+            outputText += "<p>Mortgage Total Interest Amount: $" + totalInterest + "</p>";
+            outputText += "<p>Total Mortgage Amount: $" + totalLoan + "</p>";
+            outputText += "<p>Monthly Mortgage Payment: $" + monthlyPayment + "</p>";
+            outputText += "<hr>";
+
+            var balance = parseFloat(totalLoan);
+            var month = 1;
+
+            while (balance > 0) {
+                balance = (balance - parseFloat(monthlyPayment)).toFixed(2);
+                if (balance < 0) balance = 0.00;
+
+                outputText += "<p>Month " + month + ": Payment = $" + monthlyPayment + ", Balance = $" + balance + "</p>";
+                month++;
+
+                if (balance == 0) {
+                    outputText += "<p>Ending...</p>";
+                }
+            }
+
+            document.getElementById("output").innerHTML = outputText;
+        });
+
+    </script>
+
+</body>
+</html>
